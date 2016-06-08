@@ -2,6 +2,7 @@ package controller;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.actor.Terminated;
 import akka.actor.UntypedActor;
 //import kafka.producer.KeyedMessage;
 //import kafka.javaapi.producer.Producer;
@@ -26,16 +27,28 @@ public class Controller extends UntypedActor{
     public void onReceive(Object message) throws Exception {
 
 
-        System.out.println("hello " + message);
-
-        ActorRef sessionEventHandlerActor = this.getContext().getChild(message.toString());
-
-        if(sessionEventHandlerActor == null) {
-            sessionEventHandlerActor = getContext().actorOf(Props.create(SessionHandler.class), message.toString());
+        if (message instanceof Terminated) {
+            Terminated terminatedMsg = (Terminated) message;
+            System.out.println("Actor terminated: " + terminatedMsg.actor());
         }
 
-        sessionEventHandlerActor.tell(message, getSelf());
+        else {
 
+            System.out.println("hello " + message);
+
+            ActorRef sessionEventHandlerActor = this.getContext().getChild(message.toString());
+
+            if(sessionEventHandlerActor == null) {
+                sessionEventHandlerActor = getContext().actorOf(Props.create(SessionHandler.class), message.toString());
+
+                System.out.println("Actor created: " + sessionEventHandlerActor);
+            }
+
+            sessionEventHandlerActor.tell(message, getSelf());
+
+            getContext().watch(sessionEventHandlerActor);
+
+        }
     }
 
     @Override
