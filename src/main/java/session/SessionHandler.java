@@ -11,11 +11,19 @@ import java.util.concurrent.TimeUnit;
 
 public class SessionHandler extends UntypedPersistentActor{
 
+    public Integer eventCount;
+
+    public SessionHandler() {
+        getContext().setReceiveTimeout(Duration.create(15, TimeUnit.SECONDS));
+        eventCount = 0;
+    }
+
     @Override
     public void onReceiveRecover(Object msg) throws Exception {
 
         if (msg instanceof SnapshotOffer) {
             eventCount = (Integer)((SnapshotOffer)msg).snapshot();
+            System.out.println("Reload snapshot:" + eventCount);
         } else {
             unhandled(msg);
         }
@@ -30,6 +38,7 @@ public class SessionHandler extends UntypedPersistentActor{
 
             saveSnapshot(eventCount);
         }
+
         else if (msg instanceof SaveSnapshotSuccess) {
 
             System.out.println("Save snapshot success:" + ((SaveSnapshotSuccess)msg).metadata());
@@ -47,21 +56,18 @@ public class SessionHandler extends UntypedPersistentActor{
         else {
             eventCount++;
 
-            saveSnapshot(eventCount);
-
             System.out.println("SessionHandler:" + msg);
         }
     }
 
     @Override
     public String persistenceId() {
+
+        System.out.println("Actor name:" + getSelf().path().name());
+
         return getSelf().path().name();
     }
 
-    public Integer eventCount = 0;
 
-    public SessionHandler() {
-        getContext().setReceiveTimeout(Duration.create(15, TimeUnit.SECONDS));
-    }
 
 }
