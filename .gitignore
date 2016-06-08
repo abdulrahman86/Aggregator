@@ -1,0 +1,27 @@
+target/
+
+# eclipse specific git ignore
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+.classpath
+.settings/
+.loadpath
+.README.md.html
+.springBeans
+# angular generated content
+angular-giftcard/node_modules/**
+angular-giftcard/app/dist/*
+angular-giftcard/test/unit/*
+src/main/resources/rebel.xml
+.idea/
+*.iml
+*/bin/**
+bower_components
+src/main/resources/system.properties
