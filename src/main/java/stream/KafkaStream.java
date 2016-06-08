@@ -28,7 +28,6 @@ public class KafkaStream {
 
         final ActorSystem system = ActorSystem.create("AggregationModule");
         ActorRef controller = system.actorOf(Props.create(Controller.class), "controller");
-        controller.tell("salam", controller.noSender());
 
         KStreamBuilder builder = new KStreamBuilder();
         builder.stream("test3").foreach((x, y) -> {
