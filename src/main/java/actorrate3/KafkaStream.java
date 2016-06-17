@@ -8,12 +8,22 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class KafkaStream {
 
     public static void main(String[] args) throws  Exception{
+
+        Logger mongoLogger = Logger.getLogger( "com.mongodb" );
+        mongoLogger.setLevel(java.util.logging.Level.SEVERE);
+
+        mongoLogger = Logger.getLogger( "org.mongodb" );
+        mongoLogger.setLevel(java.util.logging.Level.SEVERE);
+
 
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe");
@@ -27,11 +37,14 @@ public class KafkaStream {
 
         final ActorSystem system = ActorSystem.create("AggregationModule");
         ActorRef controller = system.actorOf(Props.create(Controller.class), "controller");
+        //ActorRef persistence = system.actorOf(Props.create(SH.class), "persistence-controller");
+
 
         Time time = new Time("Consumer rate");
 
         KStreamBuilder builder = new KStreamBuilder();
-        builder.stream("test8").foreach((x, y) -> {
+        builder.stream("dtest102").foreach((x, y) -> {
+            //time.incCount();
             controller.tell(y, controller.noSender());
         });
 

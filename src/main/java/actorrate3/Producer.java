@@ -20,7 +20,7 @@ public class Producer {
 
         Time time = new Time("Producer rate");
 
-        for (long i = 0; i < 1000000; i++) {
+        for(int i = 0; i < 1000000; i++) {
             producer.send();
             time.incCount();
         }
@@ -33,7 +33,7 @@ public class Producer {
     }
 
     public void send() {
-        ProducerRecord<String, String> msg = new ProducerRecord("test8", Math.abs(rand.nextInt())+"");
+        ProducerRecord<String, String> msg = new ProducerRecord("dtest102", Math.abs(rand.nextInt())+"");
         producer.send(msg);
     }
 }

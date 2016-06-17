@@ -1,10 +1,8 @@
 package actorrate3;
 
-import actorrate2.*;
 import akka.actor.ReceiveTimeout;
 import akka.persistence.SaveSnapshotFailure;
 import akka.persistence.SaveSnapshotSuccess;
-import akka.persistence.SnapshotOffer;
 import akka.persistence.UntypedPersistentActor;
 import scala.Option;
 import scala.concurrent.duration.Duration;
@@ -19,39 +17,35 @@ public class SessionHandler extends UntypedPersistentActor{
 
 
     public SessionHandler() {
-        getContext().setReceiveTimeout(Duration.create(5, TimeUnit.MINUTES));
+        getContext().setReceiveTimeout(Duration.create(2, TimeUnit.MINUTES));
         eventCount = 0;
     }
 
 
+
     @Override
-    public void onRecoveryFailure(Throwable cause, Option<Object> event){
+    public void onReceiveRecover(Object msg)  {
 
     }
 
-    @Override
-    public void onReceiveRecover(Object msg) throws Exception {
 
-    }
 
     @Override
-    public void onReceiveCommand(Object msg) throws Exception {
-
-        time.incCount(eventCount);
-        getContext().stop(self());
+    public void onReceiveCommand(Object msg) {
 
         if (msg instanceof ReceiveTimeout) {
 
             getContext().stop(self());
 
-//            persistAsync(eventCount, x -> {
-//                time.incCount(eventCount);
-//                getContext().stop(self());
-//            });
+            saveSnapshot(eventCount);
         }
 
+        else if (msg instanceof  SaveSnapshotSuccess || msg instanceof SaveSnapshotFailure) {
+
+        }
 
         else {
+            //saveSnapshot(50);
             synchronized (time) {
                 time.incCount();
             }

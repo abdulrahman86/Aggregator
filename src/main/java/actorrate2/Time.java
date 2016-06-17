@@ -18,7 +18,7 @@ public class Time {
     public void incCount() {
         count++;
 
-        if (count % 5000 == 0) {
+        if (count % 1000 == 0) {
 
             System.out.println(message + ": " + (count * 1000) / (System.currentTimeMillis() - time));
         }
@@ -27,7 +27,7 @@ public class Time {
     public void incCount(int count) {
         this.count  = this.count + count;
 
-        if (count % 5000 == 0) {
+        if (count % 1000 == 0) {
 
             System.out.println(message + ": " + (count * 1000) / (System.currentTimeMillis() - time));
         }
